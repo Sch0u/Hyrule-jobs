@@ -78,9 +78,7 @@ export default defineComponent({
                     <img src="@/assets/Rupee.png" alt="Rupee">
                 </div>
                 <div class="description">
-                    <p>
-                        Lerem ipsum dolor sit amet consectetur, adipisicing elit.
-                    </p>
+                    <p>{{ job.description }}</p>
                 </div>
             </li>
         </ul>
