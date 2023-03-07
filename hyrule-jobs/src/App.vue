@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent, onRenderTracked, ref } from "vue";
 import JobList from "./components/JobList.vue";
+import JobModal from "./components/JobModal.vue";
 import Job from "./types/job";
 import OrderTerm from "./types/OrderTerm";
 import { collection, getDocs, addDoc } from "firebase/firestore";
@@ -8,7 +9,17 @@ import { db } from "@/firebaseinit";
 
 export default defineComponent({
   name: "App",
-  components: { JobList },
+  components: { JobList, JobModal },
+  data(){
+    return {
+      form: {
+        title: "",
+        location: "",
+        salary: 0,
+        description: "",
+      }
+    }
+  },
   setup() {
     const jobs = ref<Job[]>([
       {
@@ -91,6 +102,31 @@ export default defineComponent({
       snapshop.forEach((doc) => {
         this.dbData.push(doc.data());
       });
+    },
+    async addJob(){
+      console.log(this.form)
+      try {
+        // Add data to database
+        const docRef = await addDoc(collection(db, "Jobs"), {
+          id: this.dbData.length + 1,
+          title: this.form.title,
+          location: this.form.location,
+          description: this.form.description,
+          salary: this.form.salary,
+        });
+        console.log("Document written with ID: ", docRef.id);
+        // Get data from database
+        this.updateData();
+      } catch (e) {
+        // Error handling
+        console.error("Error adding document: ", e);
+      }
+
+    },
+    async updateData(){
+      console.log("Updating Data")
+      this.dbData = [];
+      this.getData();
     }
   },
   mounted() {
@@ -101,13 +137,19 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="app">
+  <div class="app m-4">
     <h1>Hyryle Jobs ({{ dbData.length }})</h1>
-    <div class="order">
-      <button @click="handleClick('title')">Order by title</button>
-      <button @click="handleClick('salary')">Order by salary</button>
-      <button @click="handleClick('location')">Order by location</button>
+    <hr>
+    <div class="d-flex gap-2 order mb-2">
+      <button type="button" class="btn btn-primary" @click="handleClick('title')">Order by title</button>
+      <button type="button" class="btn btn-primary" @click="handleClick('salary')">Order by salary</button>
+      <button type="button" class="btn btn-primary" @click="handleClick('location')">Order by location</button>
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addJob">
+        Add new job
+      </button>
     </div>
-    <JobList :jobs="dbData" :order="order" />
-  </div>
+    <JobList v-on:update-jobs="updateData" :jobs="dbData" :order="order" />
+
+    <JobModal v-on:call-function="addJob" :form="form" :modal-title="'Add a new job'" :modal-button="'Add'" :modal-id="'addJob'" />
+</div>
 </template>
