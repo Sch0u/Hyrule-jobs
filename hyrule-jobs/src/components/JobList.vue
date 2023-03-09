@@ -64,6 +64,9 @@ components: { JobModal },
     async editJob(id: string) {
       let docs = await getDocs(collection(db, "Jobs"));
       let docId = this.findDocFromJobAtribute(docs, "id", id);
+      console.log(docs)
+      console.log(docId)
+      console.log(id)
 
       try {
         await updateDoc(doc(db, "Jobs", docId), {
@@ -166,9 +169,9 @@ components: { JobModal },
                 <font-awesome-icon :icon="['fas', 'trash-can']" /> Delete
             </button>
         </div>
+        <!-- Modal -->
+        <JobModal v-on:call-function="editJob(job.id)" :form="form" :modal-title="'Edit a job'" :modal-button="'Edit'" :modal-id="'editJob'" />
       </li>
     </ul>
-    <!-- Modal -->
-    <JobModal v-on:call-function="editJob" :form="form" :modal-title="'Edit a job'" :modal-button="'Edit'" :modal-id="'editJob'" />
   </div>
 </template>

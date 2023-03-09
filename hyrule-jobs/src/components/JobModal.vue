@@ -62,7 +62,7 @@ export default defineComponent({
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" @click="callFunction()" class="btn btn-primary">{{ modalButton }}</button>
+            <button type="button" @click="callFunction()" data-bs-dismiss="modal" class="btn btn-primary">{{ modalButton }}</button>
           </div>
         </div>
       </div>

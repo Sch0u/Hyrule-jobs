@@ -89,6 +89,7 @@ export default defineComponent({
               description: job.description,
               salary: job.salary,
             });
+            this.updateData();
           } else {
             console.log(`id ${job.id} already exists inside the database!`);
           }
